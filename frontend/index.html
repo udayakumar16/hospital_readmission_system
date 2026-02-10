@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hospital Readmission Prediction (XGBoost)</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>Hospital Readmission Prediction</h1>
+      <p class="subtitle">XGBoost-based 30-day readmission risk scoring</p>
+    </header>
+
+    <section class="card">
+      <h2>Patient Details</h2>
+      <form id="predict-form">
+        <div class="grid">
+          <div class="field">
+            <label for="race">Race</label>
+            <select id="race" name="race">
+              <option value="">(unknown)</option>
+              <option value="Caucasian">Caucasian</option>
+              <option value="AfricanAmerican">AfricanAmerican</option>
+              <option value="Hispanic">Hispanic</option>
+              <option value="Asian">Asian</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="gender">Gender</label>
+            <select id="gender" name="gender" required>
+              <option value="Female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Unknown/Invalid">Unknown/Invalid</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="age">Age Range</label>
+            <select id="age" name="age" required>
+              <option value="[0-10)">[0-10)</option>
+              <option value="[10-20)">[10-20)</option>
+              <option value="[20-30)">[20-30)</option>
+              <option value="[30-40)">[30-40)</option>
+              <option value="[40-50)">[40-50)</option>
+              <option value="[50-60)">[50-60)</option>
+              <option value="[60-70)">[60-70)</option>
+              <option value="[70-80)" selected>[70-80)</option>
+              <option value="[80-90)">[80-90)</option>
+              <option value="[90-100)">[90-100)</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="time_in_hospital">Time in Hospital (days)</label>
+            <input id="time_in_hospital" name="time_in_hospital" type="number" min="1" max="60" value="3" required />
+          </div>
+
+          <div class="field">
+            <label for="num_lab_procedures">Lab Procedures</label>
+            <input id="num_lab_procedures" name="num_lab_procedures" type="number" min="0" value="40" required />
+          </div>
+
+          <div class="field">
+            <label for="num_procedures">Procedures</label>
+            <input id="num_procedures" name="num_procedures" type="number" min="0" value="1" required />
+          </div>
+
+          <div class="field">
+            <label for="num_medications">Medications</label>
+            <input id="num_medications" name="num_medications" type="number" min="0" value="16" required />
+          </div>
+
+          <div class="field">
+            <label for="number_outpatient">Outpatient Visits</label>
+            <input id="number_outpatient" name="number_outpatient" type="number" min="0" value="0" required />
+          </div>
+
+          <div class="field">
+            <label for="number_emergency">Emergency Visits</label>
+            <input id="number_emergency" name="number_emergency" type="number" min="0" value="0" required />
+          </div>
+
+          <div class="field">
+            <label for="number_inpatient">Inpatient Visits</label>
+            <input id="number_inpatient" name="number_inpatient" type="number" min="0" value="0" required />
+          </div>
+
+          <div class="field">
+            <label for="number_diagnoses"># Diagnoses</label>
+            <input id="number_diagnoses" name="number_diagnoses" type="number" min="1" value="7" required />
+          </div>
+
+          <div class="field">
+            <label for="diag_1">Primary Diagnosis (diag_1)</label>
+            <input id="diag_1" name="diag_1" type="text" placeholder="e.g., 250.83 or 410" value="250.83" />
+          </div>
+
+          <div class="field">
+            <label for="diag_2">Secondary Diagnosis (diag_2)</label>
+            <input id="diag_2" name="diag_2" type="text" placeholder="e.g., 403" value="403" />
+          </div>
+
+          <div class="field">
+            <label for="diag_3">Additional Diagnosis (diag_3)</label>
+            <input id="diag_3" name="diag_3" type="text" placeholder="e.g., V27" value="V27" />
+          </div>
+
+          <div class="field">
+            <label for="A1Cresult">A1C Result</label>
+            <select id="A1Cresult" name="A1Cresult">
+              <option value="">(unknown)</option>
+              <option value="None" selected>None</option>
+              <option value=">8">&gt;8</option>
+              <option value=">7">&gt;7</option>
+              <option value="Norm">Norm</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="insulin">Insulin</label>
+            <select id="insulin" name="insulin">
+              <option value="">(unknown)</option>
+              <option value="No">No</option>
+              <option value="Steady">Steady</option>
+              <option value="Up" selected>Up</option>
+              <option value="Down">Down</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="change">Medication Change</label>
+            <select id="change" name="change">
+              <option value="">(unknown)</option>
+              <option value="No">No</option>
+              <option value="Ch" selected>Ch</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="diabetesMed">Diabetes Medication</label>
+            <select id="diabetesMed" name="diabetesMed">
+              <option value="">(unknown)</option>
+              <option value="Yes" selected>Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="admission_type_id">Admission Type ID</label>
+            <input id="admission_type_id" name="admission_type_id" type="number" min="1" value="1" />
+          </div>
+
+          <div class="field">
+            <label for="discharge_disposition_id">Discharge Disposition ID</label>
+            <input id="discharge_disposition_id" name="discharge_disposition_id" type="number" min="1" value="1" />
+          </div>
+
+          <div class="field">
+            <label for="admission_source_id">Admission Source ID</label>
+            <input id="admission_source_id" name="admission_source_id" type="number" min="1" value="7" />
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn" type="submit">Predict Risk</button>
+          <button class="btn secondary" type="button" id="demo-btn">Load High-Risk Demo</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card" id="result-card" hidden>
+      <h2>Prediction Result</h2>
+      <div class="result">
+        <div class="metric">
+          <div class="label">Readmission Probability</div>
+          <div class="value" id="probability">--</div>
+        </div>
+        <div class="metric">
+          <div class="label">Risk Category</div>
+          <div class="badge" id="risk-badge">--</div>
+        </div>
+      </div>
+      <div class="recommendation">
+        <div class="label">Care Recommendation</div>
+        <div class="value" id="recommendation">--</div>
+      </div>
+      <div class="small" id="meta"></div>
+    </section>
+
+    <footer class="footer">
+      <span>Local demo app • Flask + XGBoost</span>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
