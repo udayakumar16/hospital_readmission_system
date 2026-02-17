@@ -96,19 +96,19 @@ demoBtn.addEventListener('click', () => {
   document.getElementById('gender').value = 'Female';
   document.getElementById('age').value = '[60-70)';
 
-  document.getElementById('time_in_hospital').value = 4;
-  document.getElementById('num_lab_procedures').value = 52;
-  document.getElementById('num_procedures').value = 1;
-  document.getElementById('num_medications').value = 12;
+  document.getElementById('time_in_hospital').value = 3;
+  document.getElementById('num_lab_procedures').value = 41;
+  document.getElementById('num_procedures').value = 2;
+  document.getElementById('num_medications').value = 16;
 
-  document.getElementById('number_outpatient').value = 1;
+  document.getElementById('number_outpatient').value = 3;
   document.getElementById('number_emergency').value = 0;
-  document.getElementById('number_inpatient').value = 3;
-  document.getElementById('number_diagnoses').value = 8;
+  document.getElementById('number_inpatient').value = 15;
+  document.getElementById('number_diagnoses').value = 6;
 
   document.getElementById('diag_1').value = 'V58';
-  document.getElementById('diag_2').value = '156';
-  document.getElementById('diag_3').value = '197';
+  document.getElementById('diag_2').value = '202';
+  document.getElementById('diag_3').value = '250';
 
   // A1Cresult is unknown in this example
   document.getElementById('A1Cresult').value = '';
@@ -118,5 +118,5 @@ demoBtn.addEventListener('click', () => {
 
   document.getElementById('admission_type_id').value = 3;
   document.getElementById('discharge_disposition_id').value = 1;
-  document.getElementById('admission_source_id').value = 1;
+  document.getElementById('admission_source_id').value = 2;
 });
